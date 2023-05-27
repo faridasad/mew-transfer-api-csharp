@@ -13,6 +13,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
 builder.Services.AddSingleton<MongoDBService>();
 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
+
+builder.Services.Configure<S3Settings>(builder.Configuration.GetSection("AmazonS3"));
+builder.Services.AddSingleton<AmazonS3Service, AmazonS3Service>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +32,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(
+  options => options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()
+      );
 
 app.MapControllers();
 
